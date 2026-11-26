@@ -1,0 +1,6 @@
+[
+ {"event_id":"c1","op":"topology","id":"topo-checkout","service":"checkout","generation":1,"dependency":"payments"},
+ {"event_id":"c2","op":"sample","id":"failure-1","window":"window-1","request_uid":"req-a","source":"gateway","at":25,"kind":"dependency"},
+ {"event_id":"c3","op":"sample","id":"failure-2","window":"window-1","request_uid":"req-b","source":"service","at":26,"kind":"service"},
+ {"event_id":"c4","op":"decide","id":"case-1","window":"window-1","topology":"topo-checkout","at":30}
+]

@@ -1,0 +1,5 @@
+[
+ {"event_id":"sf1","op":"objective","id":"overlap","service":"checkout","category":"paid","revision":1,"start":20,"end":80,"target_ppm":950000},
+ {"event_id":"sf2","op":"shard","id":"late-east","objective":"checkout-api","source":"east","generation":1,"requests":90,"start":0,"end":50},
+ {"event_id":"sf3","op":"waiver","id":"waiver-invalid","objective":"checkout-api","start":10,"end":20,"security_actor":"same","owner_actor":"same"}
+]

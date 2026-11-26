@@ -1,0 +1,4 @@
+[
+ {"event_id":"path-1","op":"claim","id":"claim-after-topology","case":"case-1","tenant":"tenant-a","period":"p2","amount":40,"cap":100},
+ {"event_id":"path-2","op":"split_period","case":"case-1"}
+]

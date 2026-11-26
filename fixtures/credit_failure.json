@@ -1,0 +1,5 @@
+[
+ {"event_id":"pf1","op":"claim","id":"claim-dup","case":"case-1","tenant":"tenant-a","period":"p1","amount":60,"cap":100},
+ {"event_id":"pf2","op":"reverse","id":"reverse-1","receipt":"receipt-1","reason":"disputed-root-cause"},
+ {"event_id":"pf3","op":"settle","id":"late-receipt","claim":"claim-1","amount":50,"actor":"billing"}
+]

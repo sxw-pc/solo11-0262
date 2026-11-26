@@ -1,0 +1,6 @@
+[
+ {"event_id":"cf1","op":"sample","id":"dup","window":"window-1","request_uid":"req-a","source":"gateway","at":27,"kind":"dependency"},
+ {"event_id":"cf2","op":"dispute","id":"dispute-1","case":"case-1","actor":"owner","evidence":"independent-counter"},
+ {"event_id":"cf3","op":"resolve","id":"dispute-1","reviewer":"audit","liable":"service"},
+ {"event_id":"cf4","op":"topology","id":"topo-checkout","service":"checkout","generation":2,"dependency":"none"}
+]

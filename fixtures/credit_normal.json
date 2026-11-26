@@ -1,0 +1,4 @@
+[
+ {"event_id":"p1","op":"claim","id":"claim-1","case":"case-1","tenant":"tenant-a","period":"p1","amount":50,"cap":100},
+ {"event_id":"p2","op":"settle","id":"receipt-1","claim":"claim-1","amount":50,"actor":"billing"}
+]
