@@ -76,6 +76,13 @@ class Business(unittest.TestCase):
         self.assertEqual(one(self.db,"SELECT status FROM settlement_receipts WHERE id='receipt-1'")['status'],'reversed')
         self.assertEqual(result[2]['decision'],'settlement_denied')
 
+    def test_cross_period_claims_are_distinct_liabilities(self):
+        self.base()
+        claim={'event_id':'p2-claim','op':'claim','id':'claim-2','case':'case-1','tenant':'tenant-a','period':'p2','amount':40,'cap':100}
+        self.assertEqual(act(self.db,'credit',claim)['decision'],'claim_reserved')
+        result=act(self.db,'credit',{'event_id':'split','op':'split_period','case':'case-1'})
+        self.assertEqual(result,{'decision':'split_confirmed','periods':['p1','p2']})
+
     def test_all_fixtures_replay_exact_state_and_module_origin(self):
         self.base()
         for name in ('slo_failure','cause_failure','credit_failure'):
