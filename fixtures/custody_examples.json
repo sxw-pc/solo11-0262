@@ -1,0 +1,8 @@
+[
+  {
+    "event_id": "custody-example",
+    "op": "seal",
+    "id": "case-evidence",
+    "case": "case-1"
+  }
+]
