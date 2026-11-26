@@ -11,3 +11,7 @@ python -m unittest discover -s tests -v
 ```
 
 独立执行时先在同一个新数据库运行 `slo`、`cause`、`credit` 的正常 fixture，再运行对应失败 fixture，例如 `python -m sloattrib slo --db state.sqlite --fixture fixtures/slo_normal.json`。重复事件 ID 且正文相同返回原决定；同 ID 异正文返回 `event_identity_conflict`。报告可从 `events` 查看，重放会逐表重建并比较业务状态。
+
+## 合成闪存
+
+`flash` 的每块有两个 4 位模拟页。初值为 15，只能逐页把位从 1 清为 0；整块 erase 把两页重置成 15 并登记擦除次数。`flashview` 绑定逻辑页并读回实际物理值。所有命令都在 SQLite 中模拟，无真实硬件操作。
