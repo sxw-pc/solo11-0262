@@ -11,3 +11,7 @@ python -m unittest discover -s tests -v
 ```
 
 独立执行时先在同一个新数据库运行 `slo`、`cause`、`credit` 的正常 fixture，再运行对应失败 fixture，例如 `python -m sloattrib slo --db state.sqlite --fixture fixtures/slo_normal.json`。重复事件 ID 且正文相同返回原决定；同 ID 异正文返回 `event_identity_conflict`。报告可从 `events` 查看，重放会逐表重建并比较业务状态。
+
+## 合成服务名称和客户端访问
+
+`dns` 的 publish 设置一个逻辑服务名、地址、服务身份及缓存有效时长。lookup 在有效期内返回同一客户端的缓存。`gateway` 的 listen 在地址上注册模拟服务，deliver 按缓存地址记录实际投递。缓存到期刻需重新查名。所有地址和请求均为离线合成标识。
