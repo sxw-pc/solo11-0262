@@ -11,3 +11,7 @@ python -m unittest discover -s tests -v
 ```
 
 独立执行时先在同一个新数据库运行 `slo`、`cause`、`credit` 的正常 fixture，再运行对应失败 fixture，例如 `python -m sloattrib slo --db state.sqlite --fixture fixtures/slo_normal.json`。重复事件 ID 且正文相同返回原决定；同 ID 异正文返回 `event_identity_conflict`。报告可从 `events` 查看，重放会逐表重建并比较业务状态。
+
+## 合成命令流
+
+`wire receive` 用十六进制 fixture 输入分段数据。单字节长度按 UTF-8 字节数计算，完整帧获得流内序号，未完整字节留给下一次 receive。`worker execute` 以流和序号执行已成帧的命令。正文相同的两帧仍是两次命令，重试同一帧则不会再次执行。
