@@ -11,3 +11,7 @@ python -m unittest discover -s tests -v
 ```
 
 独立执行时先在同一个新数据库运行 `slo`、`cause`、`credit` 的正常 fixture，再运行对应失败 fixture，例如 `python -m sloattrib slo --db state.sqlite --fixture fixtures/slo_normal.json`。重复事件 ID 且正文相同返回原决定；同 ID 异正文返回 `event_identity_conflict`。报告可从 `events` 查看，重放会逐表重建并比较业务状态。
+
+## 合成机架液冷
+
+`coolant` 注册合成泵和机架供回阀，每仿真机架回路需同时打开供、回两阀。一台泵挂载的完整回路过多时，该泵不能用于提交机架服务。`rack serve` 按实际当前泵和阀状态登记请求。无真实设施接入。
