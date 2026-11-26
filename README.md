@@ -11,3 +11,7 @@ python -m unittest discover -s tests -v
 ```
 
 独立执行时先在同一个新数据库运行 `slo`、`cause`、`credit` 的正常 fixture，再运行对应失败 fixture，例如 `python -m sloattrib slo --db state.sqlite --fixture fixtures/slo_normal.json`。重复事件 ID 且正文相同返回原决定；同 ID 异正文返回 `event_identity_conflict`。报告可从 `events` 查看，重放会逐表重建并比较业务状态。
+
+## 合成多数派寄存器
+
+`replicas` 登记每个演练分组的成员和在线状态。`register vote` 可为一个组内位置记录成员对提案及值的选票，`register apply` 仅为获得多数成员选票的提案真正写入该组位置。成员之后离线不会使已持久化的投票失效。现有位置在不同分组间各自独立。两入口走相同 fixture 及事件重放接口。
