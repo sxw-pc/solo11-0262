@@ -1,5 +1,23 @@
 from .store import one, many
 
+
+def _frozen_claim_ids(db, case_ids):
+    if not case_ids:
+        return []
+    marks = ','.join('?' for _ in case_ids)
+    rows = db.execute(f"SELECT id FROM credit_claims WHERE case_id IN ({marks}) AND status IN ('draft','frozen')", tuple(case_ids)).fetchall()
+    return [r['id'] for r in rows]
+
+
+def _fx_freeze(db, case_ids):
+    from .fx import freeze_claims
+    freeze_claims(db, _frozen_claim_ids(db, case_ids))
+
+
+def _fx_resume(db, case_ids):
+    from .fx import resume_claims
+    resume_claims(db, _frozen_claim_ids(db, case_ids))
+
 SCHEMA = '''
 CREATE TABLE IF NOT EXISTS topology(id TEXT PRIMARY KEY,service TEXT,generation INTEGER,dependency TEXT,status TEXT);
 CREATE TABLE IF NOT EXISTS failure_samples(id TEXT PRIMARY KEY,window_id TEXT,request_uid TEXT,source TEXT,at INTEGER,kind TEXT,status TEXT);
@@ -15,7 +33,9 @@ def handle(db,x):
         if old and x['generation']<=old['generation']: return {'decision':'stale_topology'}
         db.execute('INSERT INTO topology VALUES(?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET generation=excluded.generation,dependency=excluded.dependency,status=excluded.status',(x['id'],x['service'],x['generation'],x['dependency'],'active'))
         db.execute("UPDATE cause_cases SET status='stale' WHERE topology_id=? AND topology_generation<? AND status='decided'",(x['id'],x['generation']))
+        stale_ids=[r['id'] for r in db.execute("SELECT id FROM cause_cases WHERE topology_id=? AND status='stale'",(x['id'],)).fetchall()]
         db.execute("UPDATE credit_claims SET status='frozen' WHERE case_id IN (SELECT id FROM cause_cases WHERE topology_id=? AND status='stale') AND status='draft'",(x['id'],))
+        _fx_freeze(db, stale_ids)
         return {'decision':'topology_active'}
     if op=='sample':
         window=one(db,'SELECT * FROM windows WHERE id=?',(x['window'],))
@@ -53,6 +73,7 @@ def handle(db,x):
         db.execute('INSERT INTO cause_disputes VALUES(?,?,?,?,?)',(x['id'],x['case'],x['actor'],x['evidence'],'open'))
         db.execute("UPDATE cause_cases SET status='disputed' WHERE id=?",(x['case'],))
         db.execute("UPDATE credit_claims SET status='frozen' WHERE case_id=? AND status='draft'",(x['case'],))
+        _fx_freeze(db, [x['case']])
         return {'decision':'dispute_open'}
     if op=='resolve':
         dispute=one(db,'SELECT * FROM cause_disputes WHERE id=?',(x['id'],))
@@ -60,5 +81,6 @@ def handle(db,x):
             return {'decision':'resolution_denied'}
         db.execute("UPDATE cause_disputes SET status='resolved' WHERE id=?",(x['id'],))
         db.execute("UPDATE cause_cases SET status='decided',liable=? WHERE id=?",(x['liable'],dispute['case_id']))
+        _fx_resume(db, [dispute['case_id']])
         return {'decision':'cause_resolved','liable':x['liable']}
     return {'decision':'unknown_operation'}

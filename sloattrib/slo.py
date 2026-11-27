@@ -57,5 +57,8 @@ def handle(db, x):
         if not objective or objective['status'] != 'active': return {'decision':'not_active'}
         db.execute("UPDATE objectives SET status='retired' WHERE id=?",(x['id'],))
         db.execute("UPDATE credit_claims SET status='frozen' WHERE case_id IN (SELECT c.id FROM cause_cases c JOIN windows w ON w.id=c.window_id WHERE w.objective=?) AND status='draft'",(x['id'],))
+        from .fx import freeze_claims
+        claim_rows=db.execute("SELECT cl.id FROM credit_claims cl JOIN cause_cases c ON c.id=cl.case_id JOIN windows w ON w.id=c.window_id WHERE w.objective=? AND cl.status IN ('draft','frozen')",(x['id'],)).fetchall()
+        freeze_claims(db, [r['id'] for r in claim_rows])
         return {'decision':'retired_and_claims_frozen'}
     return {'decision': 'unknown_operation'}

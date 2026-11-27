@@ -28,7 +28,12 @@ def main():
             result = []
             for subsystem, file in files:
                 steps = json.loads(Path(file).read_text(encoding='utf-8'))
-                result.append({'fixture': file, 'results': [act(db, subsystem, step) for step in steps]})
+                routed = []
+                for step in steps:
+                    # FX fixtures interleave credit claims with FX commands; route by op.
+                    target = 'credit' if subsystem == 'fx' and step.get('op') == 'claim' else subsystem
+                    routed.append(act(db, target, step))
+                result.append({'fixture': file, 'results': routed})
         print(json.dumps(result, ensure_ascii=False, indent=2))
     finally:
         db.close()
