@@ -1,0 +1,10 @@
+[
+ {"event_id":"aps-o1","op":"objective","id":"obj-ap1","service":"checkout","category":"paid","revision":1,"start":0,"end":100,"target_ppm":990000},
+ {"event_id":"aps-o2","op":"objective","id":"obj-ap2","service":"checkout","category":"paid","revision":1,"start":100,"end":200,"target_ppm":990000},
+ {"event_id":"aps-s1","op":"shard","id":"shard-ap1-e","objective":"obj-ap1","source":"east","generation":1,"requests":60,"start":0,"end":50},
+ {"event_id":"aps-s2","op":"shard","id":"shard-ap1-w","objective":"obj-ap1","source":"west","generation":1,"requests":40,"start":50,"end":100},
+ {"event_id":"aps-s3","op":"shard","id":"shard-ap2-e","objective":"obj-ap2","source":"east","generation":1,"requests":60,"start":100,"end":150},
+ {"event_id":"aps-s4","op":"shard","id":"shard-ap2-w","objective":"obj-ap2","source":"west","generation":1,"requests":40,"start":150,"end":200},
+ {"event_id":"aps-seal1","op":"seal","id":"window-ap1","objective":"obj-ap1","expected_sources":2,"at":100},
+ {"event_id":"aps-seal2","op":"seal","id":"window-ap2","objective":"obj-ap2","expected_sources":2,"at":200}
+]

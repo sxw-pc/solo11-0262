@@ -1,0 +1,15 @@
+[
+ {"event_id":"apc-topo","op":"topology","id":"topo-ap","service":"checkout","generation":1,"dependency":"payments"},
+
+ {"event_id":"apc-sm1","op":"sample","id":"sample-u1-gateway","window":"window-ap1","request_uid":"uid-1","source":"gateway","at":25,"kind":"dependency"},
+ {"event_id":"apc-sm2","op":"sample","id":"sample-u1-service","window":"window-ap1","request_uid":"uid-1","source":"service","at":26,"kind":"service"},
+ {"event_id":"apc-sm3","op":"sample","id":"sample-u2","window":"window-ap1","request_uid":"uid-2","source":"gateway","at":27,"kind":"service"},
+ {"event_id":"apc-sm4","op":"sample","id":"sample-u5-east","window":"window-ap1","request_uid":"uid-5","source":"east","at":28,"kind":"dependency"},
+
+ {"event_id":"apc-sm5","op":"sample","id":"sample-u3","window":"window-ap2","request_uid":"uid-3","source":"gateway","at":125,"kind":"service"},
+ {"event_id":"apc-sm6","op":"sample","id":"sample-u4","window":"window-ap2","request_uid":"uid-4","source":"west","at":126,"kind":"dependency"},
+ {"event_id":"apc-sm7","op":"sample","id":"sample-u5-gateway","window":"window-ap2","request_uid":"uid-5","source":"gateway","at":128,"kind":"service"},
+
+ {"event_id":"apc-dec1","op":"decide","id":"case-ap1","window":"window-ap1","topology":"topo-ap","at":30},
+ {"event_id":"apc-dec2","op":"decide","id":"case-ap2","window":"window-ap2","topology":"topo-ap","at":130}
+]

@@ -8,8 +8,57 @@ CREATE TABLE IF NOT EXISTS cause_disputes(id TEXT PRIMARY KEY,case_id TEXT,actor
 '''
 
 
-def handle(db,x):
+def liable_uid_detail(db, case_id):
+    """Verifiable liable-UID detail for a decided case.
+
+    Mirrors decide()'s liability predicate: a request UID is liable when it
+    has at least one accepted non-client sample in the case window. Repeated
+    sightings across partitions/sources collapse to one UID.
+    """
+    case = one(db, 'SELECT * FROM cause_cases WHERE id=?', (case_id,))
+    if not case:
+        return None
+    samples = many(
+        db,
+        "SELECT request_uid AS uid, source, kind FROM failure_samples WHERE window_id=? AND status='accepted'",
+        (case['window_id'],),
+    )
+    by_uid = {}
+    for sample in samples:
+        rec = by_uid.setdefault(sample['uid'], {'bad': False, 'sources': set(), 'kinds': set()})
+        rec['sources'].add(sample['source'])
+        rec['kinds'].add(sample['kind'])
+        if sample['kind'] != 'client':
+            rec['bad'] = True
+    uids = sorted(uid for uid, rec in by_uid.items() if rec['bad'])
+    return {
+        'case': case,
+        'window_id': case['window_id'],
+        'uids': uids,
+        'failed_requests': len(uids),
+        'partitions': {uid: sorted(by_uid[uid]['sources']) for uid in uids},
+        'detail': [
+            {'uid': uid, 'sources': sorted(by_uid[uid]['sources']), 'kinds': sorted(by_uid[uid]['kinds'])}
+            for uid in uids
+        ],
+    }
+
+
+def handle(db, x):
     op=x['op']
+    if op in ('liable_uids', 'uid_detail', 'case_uids'):
+        detail = liable_uid_detail(db, x.get('case') or x.get('id'))
+        if not detail:
+            return {'decision': 'cause_case_not_found'}
+        return {
+            'decision': 'liable_uids',
+            'case': detail['case']['id'],
+            'status': detail['case']['status'],
+            'liable': detail['case']['liable'],
+            'failed_requests': detail['failed_requests'],
+            'uids': detail['uids'],
+            'partitions': detail['partitions'],
+        }
     if op=='topology':
         old=one(db,'SELECT * FROM topology WHERE id=?',(x['id'],))
         if old and x['generation']<=old['generation']: return {'decision':'stale_topology'}

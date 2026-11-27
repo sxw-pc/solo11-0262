@@ -1,0 +1,12 @@
+[
+ {"event_id":"cap-approve","op":"apportion","id":"plan-5","case":"incident-cross","tenant":"tenant-a","total":5,"unit":1,"contract":"next_bill","issue_claims":true,
+  "periods":[{"period":"p1","cap":2,"case":"case-ap1"},{"period":"p2","cap":4,"case":"case-ap2"}]},
+
+ {"event_id":"cap-settle-p2","op":"settle","id":"receipt-ap2","claim":"plan-5:p2","amount":2,"actor":"billing"},
+ {"event_id":"cap-close-p1","op":"close_period","id":"receipt-ap1","plan":"plan-5","period":"p1","actor":"billing"},
+ {"event_id":"cap-close-p2","op":"close_period","plan":"plan-5","period":"p2","actor":"billing"},
+ {"event_id":"cap-bal-before","op":"balances","id":"bal-before","plan":"plan-5"},
+
+ {"event_id":"cap-proof-u5","op":"confirm_attribution","id":"proof-u5-p2","plan":"plan-5","uid":"uid-5","period":"p2","actor":"audit","evidence":"gateway-timestamp-128"},
+ {"event_id":"cap-bal-after","op":"balances","id":"bal-after","plan":"plan-5"}
+]
