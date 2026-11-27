@@ -1,0 +1,15 @@
+[
+  {"subsystem": "slo", "event_id": "s1", "op": "objective", "id": "checkout-api", "service": "checkout", "category": "paid", "revision": 1, "start": 0, "end": 100, "target_ppm": 990000},
+  {"subsystem": "slo", "event_id": "s2", "op": "shard", "id": "east-1", "objective": "checkout-api", "source": "east", "generation": 1, "requests": 50, "start": 0, "end": 50},
+  {"subsystem": "slo", "event_id": "s3", "op": "shard", "id": "west-1", "objective": "checkout-api", "source": "west", "generation": 1, "requests": 50, "start": 50, "end": 100},
+  {"subsystem": "slo", "event_id": "s4", "op": "seal", "id": "window-1", "objective": "checkout-api", "expected_sources": 2, "at": 100},
+  {"subsystem": "cause", "event_id": "c1", "op": "topology", "id": "topo-checkout", "service": "checkout", "generation": 1, "dependency": "payments"},
+  {"subsystem": "cause", "event_id": "c2", "op": "sample", "id": "failure-1", "window": "window-1", "request_uid": "req-a", "source": "gateway", "at": 25, "kind": "dependency"},
+  {"subsystem": "cause", "event_id": "c3", "op": "sample", "id": "failure-2", "window": "window-1", "request_uid": "req-b", "source": "service", "at": 26, "kind": "service"},
+  {"subsystem": "cause", "event_id": "c4", "op": "decide", "id": "case-1", "window": "window-1", "topology": "topo-checkout", "at": 30},
+  {"subsystem": "cause", "event_id": "c5", "op": "decide", "id": "case-2", "window": "window-1", "topology": "topo-checkout", "at": 31},
+  {"subsystem": "cause", "event_id": "c6", "op": "dispute", "id": "dispute-1", "case": "case-1", "actor": "owner", "evidence": "independent-counter"},
+  {"subsystem": "cause", "event_id": "c7", "op": "resolve", "id": "dispute-1", "reviewer": "audit", "liable": "service"},
+  {"subsystem": "cause", "event_id": "c8", "op": "topology", "id": "topo-checkout", "service": "checkout", "generation": 2, "dependency": "none"},
+  {"subsystem": "cause", "event_id": "dup-1", "op": "sample", "id": "dup-1", "window": "window-1", "request_uid": "req-a", "source": "gateway", "at": 27, "kind": "dependency"}
+]
