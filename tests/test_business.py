@@ -38,7 +38,12 @@ class Business(unittest.TestCase):
     def test_sample_identity_and_topology_drive_liability(self):
         self.fixture('slo_normal')
         results=self.fixture('cause_normal')
-        self.assertEqual(results[-1],{'decision':'decided','liable':'dependency','failed_requests':2})
+        decide=results[-1]
+        self.assertEqual(decide['decision'],'decided')
+        self.assertEqual(decide['liable'],'dependency')
+        self.assertEqual(decide['failed_requests'],2)
+        self.assertEqual(decide['failures_lower'],2)
+        self.assertEqual(decide['failures_upper'],2)
         self.assertEqual(self.fixture('cause_failure')[0]['decision'],'duplicate_source_sample')
         self.assertEqual(one(self.db,"SELECT status FROM cause_cases WHERE id='case-1'")['status'],'stale')
 
@@ -59,13 +64,28 @@ class Business(unittest.TestCase):
         self.assertEqual(one(self.db,"SELECT status FROM credit_claims WHERE id='draft'")['status'],'frozen')
         self.assertEqual(act(self.db,'credit',{'event_id':'settle-after-dispute','op':'settle','id':'receipt-x','claim':'draft','amount':40,'actor':'billing'})['decision'],'settlement_denied')
 
-    def test_waiver_expiry_changes_failure_conclusion(self):
+    def test_waiver_coverage_follows_evidence_segments_not_decision_clock(self):
         self.fixture('slo_normal')
         self.fixture('cause_normal')
+        # Evidence segments are req-a [25,26) and req-b [26,27); one failure
+        # is inside the budget, so the original case is a breach only at two.
+        self.assertEqual(one(self.db,"SELECT failed_requests FROM cause_cases WHERE id='case-1'")['failed_requests'],2)
         waiver={'event_id':'w1','op':'waiver','id':'waiver','objective':'checkout-api','start':10,'end':30,'security_actor':'sec','owner_actor':'owner'}
         self.assertEqual(act(self.db,'slo',waiver)['decision'],'waiver_active')
-        self.assertEqual(act(self.db,'cause',{'event_id':'waived-case','op':'decide','id':'waived-case','window':'window-1','topology':'topo-checkout','at':20})['decision'],'within_target')
-        self.assertEqual(act(self.db,'cause',{'event_id':'after-waiver','op':'decide','id':'after-waiver','window':'window-1','topology':'topo-checkout','at':31})['decision'],'decided')
+        # The same waiver fully covers both evidence segments, so the decision
+        # clock no longer matters: before the window and after it alike waive.
+        for event_id, at in (('before-window',5),('after-window',31),('much-later',99)):
+            result=act(self.db,'cause',{'event_id':event_id,'op':'decide','id':event_id,'window':'window-1','topology':'topo-checkout','at':at})
+            self.assertEqual(result['decision'],'within_target',event_id)
+            self.assertEqual(result['liable'],'waived',event_id)
+        # New evidence outside the waiver interval restores the breach even
+        # though the two original segments remain covered.
+        for event_id, uid, at in (('req-c','req-c',40),('req-d','req-d',41)):
+            act(self.db,'cause',{'event_id':event_id,'op':'sample','id':event_id,'window':'window-1','request_uid':uid,'source':'service','at':at,'kind':'service'})
+        result=act(self.db,'cause',{'event_id':'outside-waiver','op':'decide','id':'outside-waiver','window':'window-1','topology':'topo-checkout','at':99})
+        self.assertEqual(result['decision'],'decided')
+        self.assertEqual(result['failures_lower'],2)
+        self.assertEqual(result['failures_upper'],2)
 
     def test_settlement_reversal_preserves_original_receipt(self):
         self.base()

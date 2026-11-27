@@ -1,0 +1,9 @@
+[
+ {"event_id":"ew-topo","op":"topology","id":"topo-edge","service":"edge","generation":1,"dependency":"upstream"},
+ {"event_id":"ew-u1-a","op":"sample","id":"ew-u1-a","window":"edge-window","request_uid":"u1","source":"monitor","at":1,"kind":"service"},
+ {"event_id":"ew-u1-b","op":"sample","id":"ew-u1-b","window":"edge-window","request_uid":"u1","source":"gateway","at":2,"kind":"service"},
+ {"event_id":"ew-u3","op":"sample","id":"ew-u3","window":"edge-window","request_uid":"u3","source":"gateway","at":2,"kind":"service"},
+ {"event_id":"ew-u2-a","op":"sample","id":"ew-u2-a","window":"edge-window","request_uid":"u2","source":"monitor","at":4,"kind":"service"},
+ {"event_id":"ew-u2-b","op":"sample","id":"ew-u2-b","window":"edge-window","request_uid":"u2","source":"gateway","at":6,"kind":"service"},
+ {"event_id":"ew-d1","op":"decide","id":"edge-case-v1","window":"edge-window","topology":"topo-edge","at":7}
+]

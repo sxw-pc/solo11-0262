@@ -1,0 +1,6 @@
+[
+ {"event_id":"ew-claim","op":"claim","id":"ew-claim-1","case":"edge-case-v1","tenant":"tenant-a","period":"p1","amount":60,"cap":100,"lines":[{"request_uid":"u1","amount":30},{"request_uid":"u3","amount":30}]},
+ {"event_id":"ew-settle-v1","op":"settle","id":"ew-receipt-1","claim":"ew-claim-1","amount":60,"actor":"billing"},
+ {"event_id":"ew-claim-possible","op":"claim","id":"ew-claim-pending","case":"edge-case-v1","tenant":"tenant-b","period":"p1","amount":10,"cap":100,"lines":[{"request_uid":"u2","amount":10}]},
+ {"event_id":"ew-settle-pending","op":"settle","id":"ew-receipt-pending","claim":"ew-claim-pending","amount":10,"actor":"billing"}
+]

@@ -17,6 +17,9 @@ def connect(path):
     db.execute('CREATE TABLE IF NOT EXISTS events(seq INTEGER PRIMARY KEY AUTOINCREMENT, event_id TEXT UNIQUE, subsystem TEXT NOT NULL, payload TEXT NOT NULL, result TEXT NOT NULL)')
     for module in modules().values():
         db.executescript(module.SCHEMA)
+    for module in modules().values():
+        if hasattr(module, 'migrate'):
+            module.migrate(db)
     return db
 
 
