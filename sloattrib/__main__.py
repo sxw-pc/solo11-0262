@@ -28,7 +28,17 @@ def main():
             result = []
             for subsystem, file in files:
                 steps = json.loads(Path(file).read_text(encoding='utf-8'))
-                result.append({'fixture': file, 'results': [act(db, subsystem, step) for step in steps]})
+                results = []
+                for step in steps:
+                    # A {'subsystem': ..., 'command': ...} envelope lets one
+                    # fixture drive a re-entrant handover across modules.
+                    if isinstance(step, dict) and {'subsystem', 'command'} <= set(step):
+                        target, payload = step['subsystem'], {**step['command'], 'event_id': step['event_id']}
+                        outcome = act(db, target, payload)
+                        results.append({'subsystem': target, 'result': outcome})
+                    else:
+                        results.append(act(db, subsystem, step))
+                result.append({'fixture': file, 'results': results})
         print(json.dumps(result, ensure_ascii=False, indent=2))
     finally:
         db.close()

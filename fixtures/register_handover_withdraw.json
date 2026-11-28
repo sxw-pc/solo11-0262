@@ -1,0 +1,29 @@
+[
+  {"event_id": "w-add-a", "subsystem": "replicas", "command": {"op": "add", "epoch": "old", "node": "A"}},
+  {"event_id": "w-add-b", "subsystem": "replicas", "command": {"op": "add", "epoch": "old", "node": "B"}},
+  {"event_id": "w-add-c", "subsystem": "replicas", "command": {"op": "add", "epoch": "old", "node": "C"}},
+  {"event_id": "w-add-d", "subsystem": "replicas", "command": {"op": "add", "epoch": "new", "node": "D"}},
+  {"event_id": "w-add-e", "subsystem": "replicas", "command": {"op": "add", "epoch": "new", "node": "E"}},
+  {"event_id": "w-add-f", "subsystem": "replicas", "command": {"op": "add", "epoch": "new", "node": "F"}},
+
+  {"event_id": "w-vote-a", "subsystem": "register", "command": {"op": "vote", "epoch": "old", "slot": 7, "node": "A", "proposal": "P", "value": "2"}},
+  {"event_id": "w-handover", "subsystem": "replicas", "command": {"op": "handover", "epoch": "old", "new_epoch": "new", "mode": "withdraw"}},
+  {"event_id": "w-vote-denied", "subsystem": "register", "command": {"op": "vote", "epoch": "old", "slot": 7, "node": "B", "proposal": "P", "value": "2"}},
+  {"event_id": "w-seal", "subsystem": "replicas", "command": {"op": "seal", "epoch": "old"}},
+  {"event_id": "w-seal-again", "subsystem": "replicas", "command": {"op": "seal", "epoch": "old"}},
+
+  {"event_id": "w-confirm-b", "subsystem": "register", "command": {"op": "confirm_no_vote", "epoch": "old", "slot": 7, "node": "B"}},
+  {"event_id": "w-confirm-b-again", "subsystem": "register", "command": {"op": "confirm_no_vote", "epoch": "old", "slot": 7, "node": "B"}},
+  {"event_id": "w-withdraw-early", "subsystem": "register", "command": {"op": "withdraw_apply", "epoch": "old", "slot": 7, "proposal": "P", "value": "2"}},
+  {"event_id": "w-confirm-c", "subsystem": "register", "command": {"op": "confirm_no_vote", "epoch": "old", "slot": 7, "node": "C"}},
+
+  {"event_id": "w-withdraw-p", "subsystem": "register", "command": {"op": "withdraw_apply", "epoch": "old", "slot": 7, "proposal": "P", "value": "2"}},
+  {"event_id": "w-p-status", "subsystem": "register", "command": {"op": "proposal_status", "slot": 7, "proposal": "P"}},
+  {"event_id": "w-voter-state", "subsystem": "register", "command": {"op": "voter_state", "epoch": "old", "slot": 7}},
+
+  {"event_id": "w-complete", "subsystem": "replicas", "command": {"op": "complete", "epoch": "old", "new_epoch": "new"}},
+  {"event_id": "w-vote-d", "subsystem": "register", "command": {"op": "vote", "epoch": "new", "slot": 7, "node": "D", "proposal": "Q", "value": "9"}},
+  {"event_id": "w-vote-e", "subsystem": "register", "command": {"op": "vote", "epoch": "new", "slot": 7, "node": "E", "proposal": "Q", "value": "9"}},
+  {"event_id": "w-apply-q", "subsystem": "register", "command": {"op": "apply", "epoch": "new", "slot": 7, "proposal": "Q", "value": "9"}},
+  {"event_id": "w-read", "subsystem": "register", "command": {"op": "read", "slot": 7}}
+]

@@ -1,0 +1,32 @@
+[
+  {"event_id": "p-add-a", "subsystem": "replicas", "command": {"op": "add", "epoch": "old", "node": "A"}},
+  {"event_id": "p-add-b", "subsystem": "replicas", "command": {"op": "add", "epoch": "old", "node": "B"}},
+  {"event_id": "p-add-c", "subsystem": "replicas", "command": {"op": "add", "epoch": "old", "node": "C"}},
+  {"event_id": "p-add-d", "subsystem": "replicas", "command": {"op": "add", "epoch": "new", "node": "D"}},
+  {"event_id": "p-add-e", "subsystem": "replicas", "command": {"op": "add", "epoch": "new", "node": "E"}},
+  {"event_id": "p-add-f", "subsystem": "replicas", "command": {"op": "add", "epoch": "new", "node": "F"}},
+
+  {"event_id": "p-vote-a", "subsystem": "register", "command": {"op": "vote", "epoch": "old", "slot": 7, "node": "A", "proposal": "P", "value": "2"}},
+  {"event_id": "p-c-offline", "subsystem": "replicas", "command": {"op": "online", "epoch": "old", "node": "C", "online": false}},
+  {"event_id": "p-handover", "subsystem": "replicas", "command": {"op": "handover", "epoch": "old", "new_epoch": "new", "mode": "withdraw"}},
+  {"event_id": "p-seal", "subsystem": "replicas", "command": {"op": "seal", "epoch": "old"}},
+
+  {"event_id": "p-confirm-b", "subsystem": "register", "command": {"op": "confirm_no_vote", "epoch": "old", "slot": 7, "node": "B"}},
+
+  {"event_id": "p-c-leaves-old", "subsystem": "replicas", "command": {"op": "remove", "epoch": "old", "node": "C"}},
+  {"event_id": "p-c-joins-new", "subsystem": "replicas", "command": {"op": "add", "epoch": "new", "node": "C"}},
+
+  {"event_id": "p-withdraw-unverified", "subsystem": "register", "command": {"op": "withdraw_apply", "epoch": "old", "slot": 7, "proposal": "P", "value": "2"}},
+  {"event_id": "p-new-apply-blocked", "subsystem": "register", "command": {"op": "apply", "epoch": "new", "slot": 7, "proposal": "Q", "value": "9"}},
+
+  {"event_id": "p-rerun-b-vote", "subsystem": "register", "command": {"op": "vote", "epoch": "old", "slot": 7, "node": "B", "proposal": "P", "value": "2"}},
+  {"event_id": "p-b-late-confirmed", "subsystem": "register", "command": {"op": "deliver_late_vote", "epoch": "old", "slot": 7, "node": "B", "proposal": "P", "value": "2", "cast_before_seal": true}},
+  {"event_id": "p-c-late-no-proof", "subsystem": "register", "command": {"op": "deliver_late_vote", "epoch": "old", "slot": 7, "node": "C", "proposal": "P", "value": "2"}},
+  {"event_id": "p-c-late-vote", "subsystem": "register", "command": {"op": "deliver_late_vote", "epoch": "old", "slot": 7, "node": "C", "proposal": "P", "value": "2", "cast_before_seal": true}},
+  {"event_id": "p-c-late-vote-again", "subsystem": "register", "command": {"op": "deliver_late_vote", "epoch": "old", "slot": 7, "node": "C", "proposal": "P", "value": "2", "cast_before_seal": true}},
+
+  {"event_id": "p-settle-p", "subsystem": "register", "command": {"op": "withdraw_apply", "epoch": "old", "slot": 7, "proposal": "P", "value": "2"}},
+  {"event_id": "p-new-q-denied", "subsystem": "register", "command": {"op": "apply", "epoch": "new", "slot": 7, "proposal": "Q", "value": "9"}},
+  {"event_id": "p-read", "subsystem": "register", "command": {"op": "read", "slot": 7}},
+  {"event_id": "p-voter-state", "subsystem": "register", "command": {"op": "voter_state", "epoch": "old", "slot": 7}}
+]
